@@ -1,12 +1,19 @@
 import React from "react";
 
-export default function Card() {
+export default function Card(props) {
+  let options = props.options || {}; // Ensure options is an object
+  let priceOptions = Object.keys(options); // Extract keys if options is an object
+
   return (
     <div>
       <div className="card mt-3" style={{ width: "18rem", maxHeight: "360px" }}>
-        <img src="https://media.istockphoto.com/id/693946394/photo/paneer-tikka-kabab-tandoori-indian-cheese-skewers-or-barbecue-paneer-selective-focus.jpg?s=2048x2048&w=is&k=20&c=tTC_z1KwxMg_7w4LZ8zb4urau21vh25GnaOE1o4wzSg=" className="card-img-top" alt="..." />
+        <img 
+          src={props.imgSrc || "https://via.placeholder.com/150"} 
+          className="card-img-top" 
+          alt={props.foodName} style={{ height:"150px", objectFit:"fill" }}
+        />
         <div className="card-body">
-          <h5 className="card-title">Card title</h5>
+          <h5 className="card-title">{props.foodName}</h5>
           <p className="card-text">This is some important text</p>
           <div className="container w-100">
             <select className="m-2 h-100 bg-success">
@@ -19,8 +26,15 @@ export default function Card() {
               })}
             </select>
             <select className="m-2 h-100 bg-success rounded">
-              <option value="half">Half</option>
-              <option value="full">Full</option>
+              {priceOptions.length > 0 ? (
+                priceOptions.map((data) => (
+                  <option key={data} value={data}>
+                    {data}
+                  </option>
+                ))
+              ) : (
+                <option value="">No options available</option>
+              )}
             </select>
             <div className="d-inline h-100 fs-5">Total Price</div>
           </div>
