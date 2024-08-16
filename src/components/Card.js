@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCart, useDispatchCart } from "./ContextReducer";
 
 export default function Card(props) {
   let dispatch = useDispatchCart();
   let data = useCart();
+
   let options = props.options || {}; // Ensure options is an object
   let priceOptions = Object.keys(options); // Extract keys if options is an object
+  const priceRef = useRef();
   const [qty, setQty] = useState(1)
   const [size, setSize] = useState("")
   const handleAddToCart = async () => {
-    await dispatch({type:"ADD", id:props.foodItem._id, name:props.foodItem.name, price:props.finalPrice, qty:qty, size:size})
+    await dispatch({type:"ADD", id:props.foodItem._id, name:props.foodItem.name, price:finalPrice, qty:qty, size:size})
     console.log(data);
 
   }
+  let finalPrice = qty * parseInt(options[size]);
+  useEffect(() =>{
+    setSize(priceRef.current.value)
+  },[])
 
   return (
     <div>
@@ -35,7 +41,7 @@ export default function Card(props) {
                 );
               })}
             </select>
-            <select className="m-2 h-100 bg-success rounded" onChange={(e)=> setSize(e.target.value)}>
+            <select className="m-2 h-100 bg-success rounded" ref={priceRef} onChange={(e)=> setSize(e.target.value)}>
               {priceOptions.length > 0 ? (
                 priceOptions.map((data) => (
                   <option key={data} value={data}>
@@ -46,9 +52,11 @@ export default function Card(props) {
                 <option value="">No options available</option>
               )}
             </select>
-            <div className="d-inline h-100 fs-5">Total Price</div>
+            <div className="d-inline h-100 fs-5">
+            ₹{finalPrice}/-
+            </div>
           </div>
-          {/* <hr> */}
+          <hr/>
           <button className="btn btn-success justify-center ms-2" onClick={handleAddToCart}>Add to Cart </button>
           {/* </hr> */}
         </div>
